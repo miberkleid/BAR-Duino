@@ -1,0 +1,349 @@
+/*
+Michael Iberkleid
+ Hack[Princeton] 2014
+ Code for project iBARkleid aka BARduino V1.0 28.03.2014
+ */
+
+// include the library code:
+#include <AFMotor.h>
+#include <SoftwareSerial.h> //Software Serial Port
+#define DEBUG_ENABLED 1
+
+#define uint8 unsigned char 
+#define uint16 unsigned int
+#define uint32 unsigned long int
+
+#define RxD 3 // This is the pin that the Bluetooth (BT_TX) will transmit to the Arduino (RxD)
+#define TxD 2 // This is the pin that the Bluetooth (BT_RX) will receive from the Arduino (TxD)
+
+int Clkpin = 9; //RGB LED Clock Pin (Digital 9)
+int Datapin = 10; //RGB LED Data Pin (Digital 10)
+int green = A4; //green bottle VODKA
+int orange = A3; //orange bottle OJ
+int blue = A2; //blue bottle Cranberry
+int red = A1; // red bottle Bloody
+
+
+//initialze the motor
+AF_Stepper motor(200,2);
+
+SoftwareSerial blueToothSerial(RxD,TxD);
+
+void setup() {
+  Serial.begin(9600); // Allow Serial communication via USB cable to computer (if required)
+  //bluetooth setup
+  Serial.println("Start");
+
+
+  pinMode(RxD, INPUT); // Setup the Arduino to receive INPUT from the bluetooth shield on Digital Pin 3
+  pinMode(TxD, OUTPUT); // Setup the Arduino to send data (OUTPUT) to the bluetooth shield on Digital Pin 2
+  pinMode(Datapin, OUTPUT); // Setup the RGB LED Data Pin
+  pinMode(Clkpin, OUTPUT); // Setup the RGB LED Clock pin
+  pinMode(green, OUTPUT);
+  pinMode(orange, OUTPUT);
+  pinMode(blue, OUTPUT);
+  pinMode(red, OUTPUT);
+
+  setupBlueToothConnection(); //Used to initialise the Bluetooth shield
+
+  motor.setSpeed(30); // 10 rpm
+  //Serial.begin(9600); // set up Serial library at 9600 bps
+  motor.step(400, FORWARD, SINGLE);
+
+}
+
+void loop(){
+  digitalWrite(13,LOW); //Turn off the onboard Arduino LED
+  char recvChar;
+  while(1){
+
+    if(blueToothSerial.available()){//check if there's any data sent from the remote bluetooth shield
+      recvChar = blueToothSerial.read();
+      //Serial.print(recvChar); // Print the character received to the Serial Monitor (if required)
+
+      //If the character received = 'a' then we make a screw driver
+      if(recvChar=='a'){
+
+        motor.step(100, FORWARD, SINGLE);
+
+        Serial.println("Pouring vodka");
+        digitalWrite(green, HIGH);
+        delay(10000);
+        digitalWrite(green, LOW);
+
+        motor.step(100, FORWARD, SINGLE);
+
+        Serial.println("Pouring OJ");
+        digitalWrite(orange, HIGH);
+        delay(20000);
+        digitalWrite(orange, LOW);
+
+        motor.step(100, FORWARD, SINGLE);
+        motor.step(100, FORWARD, SINGLE);
+
+        Serial.println("Order Complete");
+        Serial.println("");
+
+
+
+      }
+
+      //If the character received = 'b' , then we make a vodka cranberry 
+      if(recvChar=='b'){
+        motor.step(100, FORWARD, SINGLE);
+
+        Serial.println("Pouring vodka");
+        digitalWrite(green, HIGH);
+        delay(10000);
+        digitalWrite(green, LOW);
+
+        motor.step(100, FORWARD, SINGLE);
+        motor.step(100, FORWARD, SINGLE);
+
+        Serial.println("Pouring Cranberry");
+        digitalWrite(red, HIGH);
+        delay(20000);
+        digitalWrite(red, LOW);
+
+        motor.step(100, FORWARD, SINGLE);
+
+        Serial.println("Order Complete");
+        Serial.println("");
+      }
+
+      //If the character received = 'c' , then we make a blody mary
+      if(recvChar=='c'){
+        motor.step(100, FORWARD, SINGLE);
+
+        Serial.println("Pouring vodka");
+        digitalWrite(green, HIGH);
+        delay(10000);
+        digitalWrite(green, LOW);
+
+        motor.step(100, FORWARD, SINGLE);
+        motor.step(100, FORWARD, SINGLE);
+        motor.step(100, FORWARD, SINGLE);
+
+        Serial.println("Pouring Bloody Mary Mix");
+        digitalWrite(blue, HIGH);
+        delay(20000);
+        digitalWrite(blue, LOW);
+
+
+        Serial.println("Order Complete");
+        Serial.println("");
+
+      }
+
+      //If the character received = 'd' , then make a barduino special
+      if(recvChar=='d'){  
+        motor.step(100, FORWARD, SINGLE);
+
+        Serial.println("Pouring drinks 1");
+        //digitalWrite(green, HIGH);
+        digitalWrite(orange, HIGH);
+        digitalWrite(red, HIGH);
+        delay(7500);
+        //digitalWrite(green, LOW);
+        digitalWrite(orange, LOW);
+        digitalWrite(red, LOW);
+        motor.step(100, FORWARD, SINGLE);
+
+
+        Serial.println("Pouring drinks 2");
+        //digitalWrite(green, HIGH);
+        digitalWrite(orange, HIGH);
+        digitalWrite(red, HIGH);
+        delay(7500);
+        //digitalWrite(green, LOW);
+        digitalWrite(orange, LOW);
+        digitalWrite(red, LOW);
+        motor.step(100, FORWARD, SINGLE);
+
+        Serial.println("Pouring drinks 3");
+        //digitalWrite(green, HIGH);
+        digitalWrite(orange, HIGH);
+        digitalWrite(red, HIGH);
+        delay(7500);
+        //digitalWrite(green, LOW);
+        digitalWrite(orange, LOW);
+        digitalWrite(red, LOW);
+        motor.step(100, FORWARD, SINGLE);
+
+        Serial.println("Pouring drinks 4");
+        //digitalWrite(green, HIGH);
+        digitalWrite(orange, HIGH);
+        digitalWrite(red, HIGH);
+        delay(7500);
+        //digitalWrite(green, LOW);
+        digitalWrite(orange, LOW);
+        digitalWrite(red, LOW);
+
+        motor.step(100, FORWARD, SINGLE);     
+
+        Serial.println("Order Complete");
+        Serial.println("");   
+      }
+
+      //If the character received = 'm' , then we pour a shot of vodka
+      if(recvChar=='m'){
+        motor.step(100, FORWARD, SINGLE);
+
+        Serial.println("Pouring shot of vodka");
+        digitalWrite(green, HIGH);
+        delay(10000);
+        digitalWrite(green, LOW);
+
+        motor.step(100, FORWARD, SINGLE);
+        motor.step(100, FORWARD, SINGLE);
+        motor.step(100, FORWARD, SINGLE);
+
+        Serial.println("Order Complete");
+        Serial.println("");
+
+      }
+
+      //If the character received = 'n' , then we pour a shot of oj
+      if(recvChar=='n'){
+        motor.step(200, FORWARD, SINGLE);
+
+        Serial.println("Pouring shot of OJ");
+        digitalWrite(orange, HIGH);
+        delay(10000);
+        digitalWrite(orange, LOW);
+
+        motor.step(200, FORWARD, SINGLE);
+        Serial.println("Order Complete");
+        Serial.println("");
+      }
+
+      //If the character received = 'n' , then we pour a shot of oj
+      if(recvChar=='l'){
+        motor.step(300, FORWARD, SINGLE);
+
+        Serial.println("Pouring shot of Craberry Juice");
+        digitalWrite(red, HIGH);
+        delay(10000);
+        digitalWrite(red, LOW);
+
+        motor.step(100, FORWARD, SINGLE);
+        Serial.println("Order Complete");
+        Serial.println("");
+      }
+
+      if(recvChar=='o'){
+        motor.step(400, FORWARD, SINGLE);
+
+        Serial.println("Pouring shot of Iced Tea");
+        digitalWrite(blue, HIGH);
+        delay(10000);
+        digitalWrite(blue, LOW);
+        Serial.println("Order Complete");
+        Serial.println("");
+      }
+      
+         //If the character received = 'm' , then we pour a shot of vodka
+      if(recvChar=='x'){
+        motor.step(100, FORWARD, SINGLE);
+
+        Serial.println("Shift");
+
+      }
+
+      //You can use the following code to deal with any information coming from the Computer (serial monitor)
+      if(Serial.available()){
+        recvChar = Serial.read();
+
+        //This will send value obtained (recvChar) to the phone. The value will be displayed on the phone.
+        blueToothSerial.print(recvChar);
+      }
+    }
+  }
+}
+
+//The following code is necessary to setup the bluetooth shield ------copy and paste----------------
+void setupBlueToothConnection()
+{
+  blueToothSerial.begin(38400); //Set BluetoothBee BaudRate to default baud rate 38400
+  blueToothSerial.print("\r\n+STWMOD=0\r\n"); //set the bluetooth work in slave mode
+  blueToothSerial.print("\r\n+STNA=SeeedBTSlave\r\n"); //set the bluetooth name as "SeeedBTSlave"
+  blueToothSerial.print("\r\n+STOAUT=1\r\n"); // Permit Paired device to connect me
+  blueToothSerial.print("\r\n+STAUTO=0\r\n"); // Auto-connection should be forbidden here
+  delay(2000); // This delay is required.
+  blueToothSerial.print("\r\n+INQ=1\r\n"); //make the slave bluetooth inquirable 
+  Serial.println("The slave bluetooth is inquirable!");
+  Serial.println("");
+  delay(2000); // This delay is required.
+  blueToothSerial.flush();
+}
+
+//The following code snippets are used update the colour of the RGB LED-----copy and paste------------
+void ClkProduce(void){
+  digitalWrite(Clkpin, LOW);
+  delayMicroseconds(20); 
+  digitalWrite(Clkpin, HIGH);
+  delayMicroseconds(20); 
+}
+void Send32Zero(void){
+  unsigned char i;
+  for (i=0; i<32; i++){
+    digitalWrite(Datapin, LOW);
+    ClkProduce();
+  }
+}
+
+uint8 TakeAntiCode(uint8 dat){
+  uint8 tmp = 0;
+  if ((dat & 0x80) == 0){
+    tmp |= 0x02; 
+  }
+
+  if ((dat & 0x40) == 0){
+    tmp |= 0x01; 
+  }
+
+  return tmp;
+}
+// gray data
+void DatSend(uint32 dx){
+  uint8 i;
+  for (i=0; i<32; i++){
+    if ((dx & 0x80000000) != 0){
+      digitalWrite(Datapin, HIGH);
+    } 
+    else {
+      digitalWrite(Datapin, LOW);
+    }
+
+    dx <<= 1;
+    ClkProduce();
+  }
+}
+// data processing
+void DataDealWithAndSend(uint8 r, uint8 g, uint8 b){
+  uint32 dx = 0;
+
+  dx |= (uint32)0x03 << 30; // highest two bits 1，flag bits
+  dx |= (uint32)TakeAntiCode(b) << 28;
+  dx |= (uint32)TakeAntiCode(g) << 26; 
+  dx |= (uint32)TakeAntiCode(r) << 24;
+
+  dx |= (uint32)b << 16;
+  dx |= (uint32)g << 8;
+  dx |= r;
+
+  DatSend(dx);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
